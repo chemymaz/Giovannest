@@ -1,0 +1,399 @@
+---
+title: "UNIVERSIDAD NACIONAL DE LA AMAZONÍA PERUANA"
+author: "ESCUELA DE POST GRADO"
+date: "MAESTRIA EN CIENCIAS EN GESTION AMBIENTAL"
+output: 
+  pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## ESTADISTICA APLICACA
+##### Alumna; Betty Mercy Guzmán Urdanivia
+### EJERCICIOS PROPUESTOS 
+#### PRUEBA DE HIPOTESIS  
+
+1. Los salarios diarios de los obreros de una empresa agrícola tienen una distribución normal con media de 23.20 soles y una desviación estándar de 4.50.Si una empresa que emplea 40 obreros les paga en promedio 21.20 soles. 
+
+   a) ¿Puede ser acusada esta empresa de pagar salarios inferiores con un nivel de significancia del 0.01?
+   b)  Construya el intervalo de confianza respectivo.
+   c) Realice la prueba de p valor y relacione con los resultados de la pregunta a)
+
+```{r Para la media, fig.height = 3 , fig.width = 8}
+library(ggplot2)
+mu = 23.20
+sig = 4.5
+n = 40
+prom = 21.20
+alfa = 0.01
+zc = round((prom-mu)/(sig/sqrt(n)), 4)
+zt = round(qnorm(0.01, mean = 0, sd = 1, lower.tail = TRUE), 4)
+
+l = qnorm(alfa/2, mean = 0, sd = 1)
+li = round(mu+l*sig/sqrt(n),2)
+ls = round(mu-l*sig/sqrt(n),2)
+
+pv = round(pnorm(zc, mean = 0, sd = 1),5)
+
+regionX=seq(zc,zt,0.01)            # Intervalo a sombrear
+xP <- c(zc,regionX,zt)             # Base de los polígonos que crean el efecto "sombra"
+yP <- c(0,dnorm(regionX,0,1),0) 
+g <- curve(dnorm(x,0,1),xlim=c(-4,4),yaxs="i",ylim=c(0,0.43),xlab = NULL, ylab=NULL)
+        polygon(xP,yP,col="orange1")
+        box()
+```
+
+##### Solución:
+
+###### Planteo de hipotesis
+
+- ${H_0}:\mu  \ge `r mu`$, La empresa no paga salarios inferiores a la media
+- ${H_1}:\mu  < `r mu`$, La empresa paga salarios inferiores a la media
+
+\noindent
+\begin{minipage}[t]{0.20\linewidth}
+\textbf{Datos:}\\ 
+
+$\mu = `r mu`$\\ 
+$\sigma = `r sig`$\\
+$n = `r n`$\\
+$\bar x = `r prom`$\\
+$\alpha = `r alfa`$\\
+
+
+
+\end{minipage}
+\begin{minipage}[t]{0.75\linewidth}
+\textbf{Cálculos:}\\
+
+\textbf{a) Prueba de hipótesis:}\\
+$\displaystyle Z_t = `r zt`$ y calculamos 
+$\displaystyle Z_c = \frac{{\bar X-\mu }}{{\sigma /\sqrt n }} = `r zc`$\\
+
+$\displaystyle Z_c < Z_t$, por lo tanto se rechaza $H_0$ y se acepta $H_1$\\
+
+Respuesta a) Sí, se puede afirmar que la empresa paga salarios inferiores con un 99\% de confienza.\\
+
+\textbf{b) Intérvalo de confianza:}\\
+
+$\displaystyle (\bar x - z_{\alpha/2}\frac{{\sigma}}{{\sqrt n }}; \bar x + z_{\alpha/2}\frac{{\sigma}}{{\sqrt n }})$ = (`r li`, `r ls`)\\
+
+Respuesta b) El intérvalo al `r 100*(1-alfa)`\% confianza para la media es de (`r li`, `r ls`).\\
+
+\textbf{c) Prueba de p-valor:}\\
+
+p-valor = `r pv`, el cual es menor que $\alpha/2 = `r alfa/2`$, por lo cual se acepta ${H_0}:\mu  \ge `r mu`$.\\
+
+respuesta c) Los resultados de la prueba del p-valor son congruentes con la prueba de hipótesis d la parte a)\\
+
+\end{minipage}
+
+
+2. Un fabricante de desbrozadoras afirma  que en promedio el 85% de sus máquinas no necesitan ninguna reparación durante sus primeros dos años de funcionamiento. INDECOPI selecciona una muestra aleatoria de 100 máquinas y encuentra  que 20 de ellas necesitan alguna reparación durante los dos primeros años. Si INDECOPI desea rechazar una afirmación verdadera de nomas de 5 en 100 
+- ¿ Que decidiría en relación con la afirmación del fabricante?.
+- Construya un intervalo de confianza del 95% y 
+- realice la prueba de p value y relacione con la afirmación del fabricante.
+
+
+
+```{r para la proporción}
+p0 = .85
+sig = 4.5
+n = 100
+x =n-20
+p1 = x/n
+alfa = 0.05
+zc = round((p1-p0)/(sqrt(p0*(1-p0)/n)), 4)
+zt = round(qnorm(alfa/2, mean = 0, sd = 1, lower.tail = TRUE), 4)
+
+l = qnorm(alfa/2, mean = 0, sd = 1)
+li = round(p0+l*sqrt(p0*(1-p0)/n),4)
+ls = round(p0-l*sqrt(p0*(1-p0)/n),4)
+
+pv = round(pnorm(zc, mean = 0, sd = 1),5)
+
+```
+##### Solución:
+
+###### Planteo de hipotesis
+
+- ${H_0}:\mu  = `r p0`$, La afirmación de la empresa es verdadera
+- ${H_1}:\mu  \not= `r p0`$, La afirmación de la empresa no tiene sustento estadístico
+
+\noindent
+\begin{minipage}[t]{0.20\linewidth}
+\textbf{Datos:}\\ 
+
+$\rho_0 = `r p0`$\\
+$x = `r x`$\\
+$n = `r n`$\\
+$\rho_1 = x/n =`r p1`$\\
+$\alpha = `r alfa`$\\
+
+\end{minipage}
+\begin{minipage}[t]{0.75\linewidth}
+\textbf{Cálculos:}\\
+
+\textbf{Prueba de hipótesis:}\\
+$\displaystyle Z_t = `r zt`$ y calculamos 
+$\displaystyle Z_c = \frac{{\rho_1-\rho_0 }}{{\sqrt \frac{\rho_0(1-\rho_0)}{n} }} = `r zc`$\\
+
+$\displaystyle Z_c > Z_t$, por lo tanto se acepta $H_0$\\
+
+Respuesta: Sí, se puede aceptar como válida la afirmación del fabricante con un 95\% de confianza.\\
+
+\textbf{Intérvalo de confianza:}\\
+
+$\displaystyle (\rho_0 - z_{\alpha/2}\sqrt{\frac{{\rho_0(1-\rho_0)}}{{n}}}; \rho_0 + z_{\alpha/2}\sqrt{\frac{{\rho_0(1-\rho_0)}}{{n}}})$ = (`r li`, `r ls`)\\
+
+Respuesta: El intérvalo al `r 100*(1-alfa)`\% de confianza para la media es de (`r li`, `r ls`).\\
+
+\textbf{Prueba de p-valor:}\\
+
+p-valor = `r pv`, el cual es mayor que $\alpha/2 = `r alfa/2`$, por lo cual se acepta ${H_0}:\mu  = `r p0`$.\\
+
+respuesta: Los resultados de la prueba del p-valor son congruentes con la afirmación del fabricante.\\
+
+\end{minipage}
+
+3. Las cajas de un cereal producidos en una fábrica deben tener un contenido medio de 16 onzas. Un inspector tomó una muestra que arrojó los siguientes pesos en onzas: 15.7, 15.7, 16.3, 15.8, 16.1, 15.9, 16.2, 15.9, 15.6 y 15.8.\\
+
+    Indicar si es razonable que el inspector usando un $\alpha$ = 0.05 ordene que se multe al fabricante. 
+
+```{r para la media var desc}
+x <- c(15.7, 15.7, 16.3, 15.8, 16.1, 15.9, 16.2, 15.9, 15.6, 15.8)
+mu = 16
+sig = round(sd(x),4)
+n = length(x)
+prom = mean(x)
+alfa = 0.05
+zc = round((prom-mu)/(sig/sqrt(n)), 4)
+zt = round(qt(alfa, n-1, lower.tail = TRUE, log.p = FALSE), 4)
+
+```
+##### Solución:
+
+###### Planteo de hipotesis
+
+- ${H_0}:\mu  \ge `r mu`$, El contenido medio de la caja cumple con el estandar
+- ${H_1}:\mu  < `r mu`$, El contenido medio está por debajo del estandar
+
+\noindent
+\begin{minipage}[t]{0.20\linewidth}
+\textbf{Datos:}\\ 
+
+$\mu = `r mu`$\\ 
+$s = `r sig`$\\
+$n = `r n`$\\
+$\bar x = `r prom`$\\
+$\alpha = `r alfa`$\\
+
+\end{minipage}
+\begin{minipage}[t]{0.75\linewidth}
+\textbf{Cálculos:}\\
+
+\textbf{Prueba de hipótesis:}\\
+$\displaystyle t_t = `r zt`$ y calculamos 
+$\displaystyle t_c = \frac{{\bar X-\mu }}{{s /\sqrt n }} = `r zc`$\\
+
+$\displaystyle t_c > t_t$, por lo tanto se acepta $H_0$\\
+
+Respuesta: No, no es razonable multar a la empresa puesto que cumple con el estandar con un `r 100*(1-alfa)`\% de confienza.\\
+
+\end{minipage}
+
+4. Se sabe que en el pasado, la captura promedio de sajinos en cada trampa colocada en una región particular de la selva es de 30.1Kg. Una muestra de 20 trampas colocadas recientemente dio un promedio de 28.94 Kg. y una desviación estándar de 9.507 Kg. ¿Presentan estos datos suficiente evidencia a favor de la afirmación de que la captura promedio ha disminuido?
+Use $\alpha$ = 0.05.
+
+```{r Para la media var desc 2}
+mu = 30.1
+sig = 9.507
+n = 20
+prom = 28.94
+alfa = 0.05
+zc = round((prom-mu)/(sig/sqrt(n)), 4)
+zt = round(qt(alfa, n-1, lower.tail = TRUE, log.p = FALSE), 4)
+
+```
+##### Solución:
+
+###### Planteo de hipotesis
+
+- ${H_0}:\mu  \ge `r mu`$, La captura promedio de sajino no ha disminuido
+- ${H_1}:\mu  < `r mu`$, La captura promedio de sajino si ha disminuido
+
+\noindent
+\begin{minipage}[t]{0.20\linewidth}
+\textbf{Datos:}\\ 
+
+$\mu = `r mu`$\\ 
+$s = `r sig`$\\
+$n = `r n`$\\
+$\bar x = `r prom`$\\
+$\alpha = `r alfa`$\\
+
+\end{minipage}
+\begin{minipage}[t]{0.75\linewidth}
+\textbf{Cálculos:}\\
+
+\textbf{Prueba de hipótesis:}\\
+$\displaystyle t_t = `r zt`$ y calculamos 
+$\displaystyle t_c = \frac{{\bar X-\mu }}{{s /\sqrt n }} = `r zc`$\\
+
+$\displaystyle t_c > t_t$, por lo tanto se acepta $H_0$\\
+
+Respuesta: No, los datos no muestran una disminución significativa en la captura de sajino, con un `r 100*(1-alfa)`\% de confienza.\\
+
+\end{minipage}
+
+5. Se han propuesto 2 métodos para determinar el contenido de Humedad en semillas de Maíz, empleándose para ambos métodos 21 observaciones. El método 1 es más fácil de aplicar pero parece más variable que el método 2.
+
+    Usando los siguientes resultados $s^2_1$ = 0.14 y $s^2_2$ = 0.17, realizar la prueba de Hipótesis respectiva y determinar las conclusiones a que llegaría $\alpha$ = 0.05.
+    
+```{r cociente de varianzas}
+n1 = 21
+n2 = 21
+v1 = 0.14
+v2 = 0.17
+alfa = 0.05
+f = round(v2/v1, 4)
+zt = round(qf(alfa, n2-1, n1-1, lower.tail = TRUE, log.p = FALSE), 4)
+
+```
+
+##### Solución:
+
+###### Planteo de hipotesis
+
+- $\displaystyle H_{0}:\frac{\sigma _{2}^{2}}{\sigma_{1}^{2}} \ge 1$,
+El método 1 no es más variable que el método 2.
+
+- $\displaystyle H_{0}:\frac{\sigma _{2}^{2}}{\sigma_{1}^{2}} < 1$, 
+El método 1 es más variable que el método 2.
+
+\noindent
+\begin{minipage}[t]{0.20\linewidth}
+\textbf{Datos:}\\ 
+
+$n_1 = `r n1`$\\ 
+$n_2 = `r n2`$\\
+$s _{1}^{2} = `r v1`$\\
+$s _{2}^{2} = `r v2`$\\
+$\alpha = `r alfa`$\\
+
+\end{minipage}
+\begin{minipage}[t]{0.75\linewidth}
+\textbf{Cálculos:}\\
+
+\textbf{Prueba de hipótesis:}\\
+$\displaystyle F_t = `r zt`$ y calculamos 
+$\displaystyle F_c = \frac{s _{2}^{2}}{s_{1}^{2}} = `r f`$\\
+
+$\displaystyle F_c > F_t$, por lo tanto se acepta $H_0$\\
+
+Conclusión: Los datos no muestran que el método 1 sea mas variable que el método 2, con un `r 100*(1-alfa)`\% de confienza.\\
+
+\end{minipage}
+  
+6. Se realiza un experimento en condiciones de Invernadero para comparar los tiempos medios requeridos para la absorción de Nitrógeno de 2 marcas A y B. diez plantas seleccionadas al azar, fueron asignados en cada marca. Cada planta recibió una dosis de la marca correspondiente y se observó el tiempo en minutos hasta que el Nitrógeno fuera absorbido totalmente por la planta.
+
+    Las medias y variancias para las 2 muestras fueron:
+
+MARCA A 	         |	MARCA B
+--------          |--------
+$\bar x_1$ = 27.2 |	$\bar x_1$ = 33.5
+$s^2_1$ = 16.36   |	$s^2_1$ = 18.12  
+   ¿Proporcionan los datos suficiente evidencia para concluir que existe la diferencia entre los tiempos promedios de absorción para las 2 marcas? $\alpha$ = 0.01. 
+
+```{r para la diferencia de medias}
+n1 = 10
+n2 = 10
+v1 = 16.36
+v2 = 18.12
+prom1 = 27.2
+prom2 = 33.5
+alfa = 0.01
+zc = round((prom1-prom2)/sqrt(v1/n1+v2/n2), 4)
+zt = round(qt(alfa/2, n2+n1-2, lower.tail = TRUE, log.p = FALSE), 4)
+```
+##### Solución:
+
+###### Planteo de hipotesis
+
+- $H_{0}:\mu _{1}-\mu _{2}=0$, los tiempos promedio de absorción son iguales.
+- $H_{1}:\mu _{1}-\mu _{2} \not=0$, los tiempos promedio de absorción no son iguales.
+
+\noindent
+\begin{minipage}[t]{0.20\linewidth}
+\textbf{Datos:}\\ 
+
+$n_1 = `r n1`$\\
+$n_1 = `r n2`$\\
+$\bar x_1 = `r prom1`$\\
+$\bar x_2 = `r prom2`$\\
+$s _{1}^{2}=`r v1`$\\
+$s _{2}^{2}=`r v1`$\\
+$\alpha = `r alfa`$\\
+
+\end{minipage}
+\begin{minipage}[t]{0.75\linewidth}
+\textbf{Cálculos:}\\
+
+\textbf{Prueba de hipótesis:}\\
+$\displaystyle t_t = `r zt`$ y calculamos 
+$\displaystyle t_c=\frac{(\overline{x_1}-\overline{x_2})-(\mu _{1}-\mu _{2})}{\sqrt{\frac{{S}_{1}^{2}}{n_1}+\frac{{S}_{2}^{2}}{n_2}}}\  = `r zc`$\\
+
+$\displaystyle Z_c < Z_t$, por lo tanto se rechaza $H_0$ y se acepta $H_1$\\
+
+Respuesta: Si, se puede afirmmar que existe diferencia significativa entre los tiempos promedios de absorción de las dos marcas, con un `r 100*(1-alfa)`\% de confienza.\\
+
+\end{minipage}
+
+7. Un laboratorio veterinario ha elaborado un medicamento para tratar Edema Alto. El laboratorio afirma que el medicamento efectivamente baja el edema en el 80% de los casos. Si 175 animales de 225 tratados con el medicamento experimentan una disminución significativa del edema ¿Concluiría Ud. que el laboratorio ha exagerado la efectividad del medicamento? $\alpha$ = 0.01.
+
+```{r para la proporción 2}
+p0 = .80
+sig = 4.5
+n = 225
+x =175
+p1 = round(x/n, 4)
+alfa = 0.01
+zc = round((p1-p0)/(sqrt(p0*(1-p0)/n)), 4)
+zt = round(qnorm(alfa/2, mean = 0, sd = 1, lower.tail = TRUE), 4)
+
+```
+##### Solución:
+
+###### Planteo de hipotesis
+
+- ${H_0}:\mu  \ge `r p0`$, la afirmación de la empresa es mesurada.
+- ${H_1}:\mu  < `r p0`$, la afirmación de la empresa es exagerada.
+
+\noindent
+\begin{minipage}[t]{0.30\linewidth}
+\textbf{Datos:}\\ 
+
+$\rho_0 = `r p0`$\\
+$x = `r x`$\\
+$n = `r n`$\\
+$\rho_1 = x/n =`r p1`$\\
+$\alpha = `r alfa`$\\
+
+\end{minipage}
+\begin{minipage}[t]{0.65\linewidth}
+\textbf{Cálculos:}\\
+
+\textbf{Prueba de hipótesis:}\\
+$\displaystyle Z_t = `r zt`$ y calculamos 
+$\displaystyle Z_c = \frac{{\rho_1-\rho_0 }}{{\sqrt \frac{\rho_0(1-\rho_0)}{n} }} = `r zc`$\\
+
+$\displaystyle Z_c > Z_t$, por lo tanto se acepta $H_0$\\
+
+Respuesta: No, la afirmación del laboratorio es valedera con un `r 100*(1-alfa)`\% de confianza.\\
+
+\end{minipage}
+
+
+JFRCH – MCGA – XI –P 2021
