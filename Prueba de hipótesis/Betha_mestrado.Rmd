@@ -7,7 +7,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## ESTADISTICA APLICACA
@@ -21,28 +21,49 @@ knitr::opts_chunk$set(echo = FALSE)
    b)  Construya el intervalo de confianza respectivo.
    c) Realice la prueba de p valor y relacione con los resultados de la pregunta a)
 
-```{r Para la media, fig.height = 3 , fig.width = 8}
+```{r Para la media, fig.height = 3 , fig.width = 5}
 library(ggplot2)
 mu = 23.20
 sig = 4.5
 n = 40
 prom = 21.20
 alfa = 0.01
-zc = round((prom-mu)/(sig/sqrt(n)), 4)
+ec = round((prom-mu)/(sig/sqrt(n)), 4)
 zt = round(qnorm(0.01, mean = 0, sd = 1, lower.tail = TRUE), 4)
 
 l = qnorm(alfa/2, mean = 0, sd = 1)
 li = round(mu+l*sig/sqrt(n),2)
 ls = round(mu-l*sig/sqrt(n),2)
 
-pv = round(pnorm(zc, mean = 0, sd = 1),5)
+pv = round(pnorm(ec, mean = 0, sd = 1),5)
 
-regionX=seq(zc,zt,0.01)            # Intervalo a sombrear
-xP <- c(zc,regionX,zt)             # Base de los polígonos que crean el efecto "sombra"
-yP <- c(0,dnorm(regionX,0,1),0) 
-g <- curve(dnorm(x,0,1),xlim=c(-4,4),yaxs="i",ylim=c(0,0.43),xlab = NULL, ylab=NULL)
-        polygon(xP,yP,col="orange1")
-        box()
+et = qnorm(alfa, mean = 0, sd = 1, lower.tail = TRUE)
+regionX=seq(-10,et,0.01)            # Intervalo a sombrear
+xP <- c(-10,regionX,et)             # Base de los polígonos que crean el efecto "sombra"
+yP <- c(0,dnorm(regionX,0,1),0)
+#plot(c(-4, 4), c(-0.1, 0.4), type="n", axes=NULL)
+curve(dnorm(x,0,1),yaxs="i", lwd=2, 
+           xlim=c(-3.5, 3.5),
+           ylim=c(0,0.43),
+           xlab = NULL,
+           ylab=NULL)
+           # axes=NULL)
+# # cola derecha
+# polygon(-xP,yP,col="blue")
+# text(-et+1.0, 0.05, "R.C.")
+# text(et, -0.03, "z_t")              
+# abline(v=-et, col="blue", lwd= 2)
+# cola izquierda
+polygon(xP,yP,col="blue2", lwd= 2)
+text(et-1.0, 0.03, "R.C.")
+text(et, dnorm(et,0,1)+0.1, "z_t")              
+abline(v=et, col="blue", lwd= 2)
+# calculado
+abline(v=ec, col="orange1", lwd= 2)
+text(ec, dnorm(ec,0,1)+0.1, "z_c")
+text(0, 0.10,"R.A.")
+abline(h=0, lwd=2)
+
 ```
 
 ##### Solución:
@@ -70,7 +91,7 @@ $\alpha = `r alfa`$\\
 
 \textbf{a) Prueba de hipótesis:}\\
 $\displaystyle Z_t = `r zt`$ y calculamos 
-$\displaystyle Z_c = \frac{{\bar X-\mu }}{{\sigma /\sqrt n }} = `r zc`$\\
+$\displaystyle Z_c = \frac{{\bar X-\mu }}{{\sigma /\sqrt n }} = `r ec`$\\
 
 $\displaystyle Z_c < Z_t$, por lo tanto se rechaza $H_0$ y se acepta $H_1$\\
 
